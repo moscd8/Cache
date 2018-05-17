@@ -1,0 +1,136 @@
+package main.java.com.hit.dao;
+
+import main.java.com.hit.dm.DataModel;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.sun.jmx.snmp.ThreadContext.contains;
+
+public class DaoFileImpl<T>  implements IDao<Long,DataModel<T>> {
+    private String filename;
+    private Long Id;
+    private File file;
+    private ObjectInputStream in;
+//    private ObjectOutputStream out;
+    private ObjectOutputStream out;
+
+    protected Map<Long,DataModel<T>> Pages;
+
+    public  DaoFileImpl(String filename){
+        this.filename=filename;
+
+
+        try {
+            out=new ObjectOutputStream(new FileOutputStream(filename));
+            }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void delete(DataModel<T> entity) {
+       // if(entity != null)
+       // {  //Long temp=entity.getDataModelId();
+           try {
+
+                  File temp_1=new File("C:\\Users\\moshe\\IdeaProjects\\Cache\\copy.obj");
+                  //in=new NoHeaderObjectInPutStream(new FileInputStream(filename));
+                  ObjectInputStream in=new ObjectInputStream(new FileInputStream(filename)) ;
+               // ObjectInputStream reader = new ObjectInputStream(new FileInputStream(filename));
+                   ObjectOutputStream writer = new ObjectOutputStream(new FileOutputStream(temp_1));
+                   writer = new NoHeaderObjectOutPutStream(new FileOutputStream( temp_1));
+                   DataModel<T>  page=null;
+
+                   while(in.available()>=0 )
+                   {
+                       System.out.println("in delete" );
+                       //   page= (DataModel<T>) obj;
+                        page= (DataModel<T>) in.readObject();
+                        System.out.println(page);
+
+                       if(page.getDataModelId() !=  entity.getDataModelId())
+                       {
+                          writer.writeObject(page);
+
+
+//                           writer.writeObject(page.getDataModelId());
+                       }
+                    }
+
+//         System.out.println("Entity : "+ entity.getDataModelId() + " deleted ...");
+            //String newFileName= filename;
+
+               in.close();
+               File newfile=new File(filename);
+               newfile.delete();
+                writer.close();
+//                newfile=new File(temp_1);
+            temp_1.renameTo(new File(filename));
+
+            }
+            catch (IOException e) {
+                  // e.printStackTrace();
+             } catch (ClassNotFoundException e) {
+               e.printStackTrace();
+           }
+       //     System.out.println("Entity Not Found...");
+
+    }
+
+
+    @Override
+    public DataModel<T> find(Long aLong) {
+        try {
+
+            //File temp_1 = new File("C:\\Users\\moshe\\IdeaProjects\\Cache\\copy.obj");
+
+
+            ObjectInputStream in=new ObjectInputStream(new FileInputStream(filename)) ;
+          //  writer = new ObjectOutputStream(new FileOutputStream(temp_1));
+            DataModel<T> page = null;
+            while ((in.available()) >= 0) {
+                System.out.println("FIND");
+                page = (DataModel<T>) in.readObject();
+                System.out.println(page);
+
+                if (page.getDataModelId() == aLong) {
+                    return page;
+                }
+            }
+        } catch (IOException e) {
+            //   e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                in.close();
+             //   writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        // System.out.println("Entity.ID : "+aLong + " deleted ...");
+        return null;
+    }
+
+
+    @Override  //V
+    public void save(DataModel<T> entity){
+        try {
+            out= new NoHeaderObjectOutPutStream(new FileOutputStream(filename,true));
+            //out.writeChars("\n");
+            out.writeObject(entity );///+entity.getDataModelId());
+            System.out.println("in save" + entity);
+           // out.writeObject("\n");
+            //out.writeObject(String.valueOf(entity.getDataModelId()) );
+//           out.writeChars("\n");
+
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
