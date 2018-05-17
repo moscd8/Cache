@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.Observer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+///T??E?st
 public class Server  extends Object implements Observer {
 
     private ServerSocket serversocket;
