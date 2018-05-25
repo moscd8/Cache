@@ -18,24 +18,24 @@ import java.util.Map;
 public class HandleRequest<T> extends java.lang.Object implements java.lang.Runnable {
     private CacheUnitController<T> controller;
     private Socket socket;
-    private Request<DataModel<T>[]> socketrequest;
-    private ObjectInputStream inputStream;
+     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
 
     Gson gson;
-    Type ref;
 
     public HandleRequest(Socket s, CacheUnitController<T> controller){
         this.controller = controller;
         this.socket=s;
 
-        try {
-            inputStream=new ObjectInputStream(socket.getInputStream());
-            outputStream=new ObjectOutputStream(socket.getOutputStream());
 
+        try {
+
+           inputStream=new ObjectInputStream(socket.getInputStream());
+           outputStream=new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("RUN");
         gson=new GsonBuilder().create();
     }
 
@@ -47,50 +47,44 @@ public class HandleRequest<T> extends java.lang.Object implements java.lang.Runn
             DataModel[] datamodel=null;
             DataModel<T>[] body;
 
-            ref=new TypeToken<Request<DataModel<T>[]>>(){}.getType();
+            Type ref = new TypeToken<Request<DataModel<T>[]>>() {}.getType();
+            Request<DataModel<T>[]> socketrequest;
             command= (String) inputStream.readObject();
-            socketrequest=new Gson().fromJson(command,ref);
+            System.out.println("Command is : " + command);
+            socketrequest = new Gson().fromJson(command, ref);
+            Map headers = socketrequest.getHeaders();
+            command = (String) headers.get("action");
+            body = socketrequest.getBody();
 
-            Map headers= socketrequest.getHeaders();
-            command= (String) headers.get("action");
-            body=socketrequest.getBody();
 
-
-            if(command.toUpperCase().equals("GET"))
-            {
+            if (command.toUpperCase().equals("GET")) {
                 System.out.println("get...");
                 DataModel[] dataModels = controller.get(body);
                 for (DataModel<T> dm : dataModels) {
                     String outputgson = gson.toJson(dm);
                     outputStream.writeObject(outputgson);
                 }
-            }
-            else if(command.toUpperCase().equals("UPDATE"))
-            {
+            } else if (command.toUpperCase().equals("UPDATE")) {
                 System.out.println("update..");
-                boolean updade = controller.update(body);
-                outputStream.writeObject(updade);
-            }
-            else if (command.equals("DELETE"))
-                {
-                    System.out.println("delete..");
-                    boolean delete=controller.delete(body);
-                    outputStream.writeObject(delete);
-                }
-                else{
-                    System.out.println("no apporiate header found...");
-                    outputStream.writeObject("Unkowon Action");
-                    outputStream.flush();
-                    }
-
-         } catch (IOException e) {
+                boolean update = controller.update(body);
+                outputStream.writeObject(update);
+            } else if (command.equals("DELETE")) {
+                System.out.println("delete..");
+                boolean delete = controller.delete(body);
+                outputStream.writeObject(delete);
+            } else {
+                System.out.println("no apporiate header found...");
+                outputStream.writeObject("Unkowon Action");
+              }
+        } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
+  }
 
-    private void writeToOutputStrean(String s){
+    private void writeToOutputStrean(String s)
+    {
         try {
             outputStream.writeObject(s);
         } catch (IOException e) {
