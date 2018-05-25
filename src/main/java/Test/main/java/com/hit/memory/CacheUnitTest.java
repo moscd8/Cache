@@ -19,14 +19,11 @@ public class CacheUnitTest extends java.lang.Object{
 
         String[] str= new String[]{"a", "b", "c"};
 
-        for(int i=0;i<3;i++)
-        {
-            lru.putElement(Long.valueOf(i),new DataModel<>(Long.valueOf(i),str[i]));
-        }
 
-        for(int i=0;i<3;i++)
-        {
-            daofile.save(new DataModel<>(Long.valueOf(i),str[i]));
+        for(int i=1;i<=3;i++) {
+            DataModel<String> dm = new DataModel<String>((long) i, (("a")+i ).toString());
+            lru.putElement((long) i,dm);
+            daofile.save(dm);
         }
 
         Long[] ids={Long.valueOf(1), Long.valueOf(2), Long.valueOf(3)};

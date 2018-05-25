@@ -76,45 +76,37 @@ public class DaoFileImpl<T>  implements IDao<Long,DataModel<T>> {
     }
 
 
-
-
-
-
-        @Override  //V
-    public void save(DataModel<T> entity)
-        {
-            PrintWriter pw = null;
-            BufferedReader fr = null;
+    @Override
+    public void save(DataModel<T> entity) {
+        PrintWriter pw = null;
+        BufferedReader fr = null;
+        try {
+            pw = new PrintWriter(new BufferedWriter(new FileWriter(filename, true)));
+            fr = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
+            //pw.println("id="+entity.getDataModelId()+" page="+entity+" \n ");
+            String line = fr.readLine();
+            while (line != null) {
+                if ((line.contains(entity.getDataModelId().toString()))) {
+                //    System.out.println("is already exist..");
+                    break;
+                } else
+                    line = fr.readLine();
+            }
+            pw.println(entity.toString());
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } finally {
             try {
-                pw = new PrintWriter(new BufferedWriter(new FileWriter(filename, true)));
-                fr = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
-                //pw.println("id="+entity.getDataModelId()+" page="+entity+" \n ");
-                String line = fr.readLine();
-                while (line != null) {
-                    if ((line.contains(entity.getDataModelId().toString())))
-                    { System.out.println("is already exist..");
-                      break;
-                    }
-                    else
-                        line = fr.readLine();
-                }
-                pw.println(entity.toString());
-                }
-                catch (FileNotFoundException e1) {
-                e1.printStackTrace();
-            } catch (IOException e1) {
-                e1.printStackTrace();
+                fr.close();
+                pw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            finally {
-                try {
-                    fr.close();
-                    pw.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
-            }
-            }
+        }
+    }
 }
 
 

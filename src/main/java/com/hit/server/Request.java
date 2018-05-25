@@ -3,7 +3,7 @@ package main.java.com.hit.server;
 
 public class Request<T> extends java.lang.Object implements java.io.Serializable{
     private java.util.Map<java.lang.String,java.lang.String> headersmap=null;
-    private  T body;
+    private T body;
 
     Request(java.util.Map<java.lang.String,java.lang.String> headers, T body){
         this.headersmap=headers;
@@ -13,10 +13,11 @@ public class Request<T> extends java.lang.Object implements java.io.Serializable
         return this.body;
     }
 
-    java.util.Map<java.lang.String,java.lang.String>	getHeaders() {
-
+    java.util.Map<java.lang.String,java.lang.String>	getHeaders()
+    {
         return headersmap;
     }
+
     void setBody(T body)
     {
         this.body=body;
@@ -34,8 +35,5 @@ public class Request<T> extends java.lang.Object implements java.io.Serializable
                 ",body= "+ body.toString()+"] ;";
 
     }
-
-    //  java.lang.String toString(){}
-
 
 }

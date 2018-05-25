@@ -11,12 +11,12 @@ public class CacheUnitServices<T> {
 
     public CacheUnitServices()
     {
-        LRUAlgoCacheImpl<T,DataModel<T>> lru=new LRUAlgoCacheImpl<>(25);
+        LRUAlgoCacheImpl<T,DataModel<T>> lru=new LRUAlgoCacheImpl<>(3);
         DaoFileImpl<T> daoFile = new DaoFileImpl<>("out.txt");
 
         this.cacheUnit=new CacheUnit(lru,daoFile);
 
-        for (int i=0;i<150;i++){
+        for (int i=0;i<4;i++){
             Integer integer=i;
             daoFile.save(new DataModel<>(Long.valueOf(i),integer));
         }

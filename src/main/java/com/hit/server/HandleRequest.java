@@ -27,7 +27,6 @@ public class HandleRequest<T> extends java.lang.Object implements java.lang.Runn
         this.controller = controller;
         this.socket=s;
 
-
         try {
 
            inputStream=new ObjectInputStream(socket.getInputStream());
