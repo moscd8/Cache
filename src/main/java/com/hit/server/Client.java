@@ -16,19 +16,22 @@ public class Client {
 
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
-        DataModel[] dataModel = new DataModel[1];
+        String jsonpath = "C:\\Users\\moshe\\IdeaProjects\\Cache\\src\\main\\resources\\request.JSON";
 
-        dataModel[0] = new DataModel(Long.valueOf(100), Integer.valueOf(30));
+//*        DataModel[] dataModel = new DataModel[2];
+
+    //*    dataModel[0] = new DataModel(Long.valueOf(100), Integer.valueOf(30));
+    //*    dataModel[1] = new DataModel(Long.valueOf(101), Integer.valueOf(31));
 
         Map<String, String> map = new HashMap<>();
-        String action = "action";
-        String header = "UPDATE";
+//        String action = "action";
+//        String header = "UPDATE";
 
-        header = scanner.nextLine();
-        scanner.reset();
+//        header = scanner.nextLine();
+//        scanner.reset();
 
-        map.put(action, header);
-        Request request = new Request(map, dataModel);
+//        map.put(action, header);
+//*        Request request = new Request(map, dataModel);
         Gson gson = new Gson();
 
 
@@ -41,33 +44,48 @@ public class Client {
         Scanner reader = new Scanner(new InputStreamReader(clinetSocket.getInputStream()));
         PrintWriter writer = new PrintWriter(new OutputStreamWriter(clinetSocket.getOutputStream()));
 
-        String gsonModel = gson.toJson(request);
+//*        String gsonModel = gson.toJson(request);
 //        writer.writeObject (gsonModel);
 
-        System.out.println(gsonModel);
+        //*     System.out.println(gsonModel);
 
-        writer.write(gsonModel.toString());
-        DataModel model;
+        //*       writer.println(gsonModel.toString());
+        //*writer.flush();
+
+
+        Scanner scanner2  =new Scanner(new FileReader(jsonpath));
+
+        String gsondm=scanner2.nextLine();
+        System.out.println(gsondm);
+        writer.println(gsondm);
+        writer.flush();
+
+        System.out.println("after sendind server.. ");
         String inputGson;
-        boolean flag=true;
-        while (flag)
-        {
+
+        DataModel[] model;
+        boolean flag = true;
+          //while (flag)
+          //  {
+
+
 //            inputGson = (String) input.readObject();
-            if (reader.hasNextLine()) {
-                inputGson = (String) reader.nextLine();
-                model = gson.fromJson(inputGson, DataModel.class);
-                System.out.println(model.toString());
-                System.out.println("enter another command ");
-                inputGson = (String) scanner.nextLine();
-  //*
-            } else {
-                System.out.println("enter another command ");
-                inputGson = (String) scanner.nextLine();
-                model = gson.fromJson(inputGson, DataModel.class);
-                System.out.println(model.toString());
-   //          */
-            }
-        }
+        //    if (reader.hasNextLine()) {
+
+
+//        inputGson = (String) reader.nextLine();
+//        System.out.println("Input Jason is :  "+inputGson);
+        Boolean bool=false;
+//        inputGson = reader.nextLine();
+        bool = Boolean.valueOf(reader.nextLine());
+
+        if (bool)
+            System.out.println("Input model is: ok   ");
+        else
+            System.out.println("Input model is: NOT ok   ");
+
+//        model = gson.fromJson(inputGson, DataModel[].class);
+//        System.out.println("DMS  is :"+model.toString());
+       //       }
     }
 }
-

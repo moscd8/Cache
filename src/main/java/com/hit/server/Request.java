@@ -1,21 +1,25 @@
 package main.java.com.hit.server;
 
 
-public class Request<T> extends java.lang.Object implements java.io.Serializable{
-    private java.util.Map<java.lang.String,java.lang.String> headersmap=null;
+import java.io.Serializable;
+import java.util.Map;
+
+public class Request<T> extends Object implements Serializable {
+    private Map<String,String> headers;//=null;
     private T body;
 
-    Request(java.util.Map<java.lang.String,java.lang.String> headers, T body){
-        this.headersmap=headers;
+    Request(Map<String,String> headers, T body){
+        this.headers=headers;
         this.body=body;
     }
-    T getBody(){
+    T getBody()
+    {
         return this.body;
     }
 
-    java.util.Map<java.lang.String,java.lang.String>	getHeaders()
+    Map<String,String> getHeaders()
     {
-        return headersmap;
+        return headers;
     }
 
     void setBody(T body)
@@ -23,17 +27,13 @@ public class Request<T> extends java.lang.Object implements java.io.Serializable
         this.body=body;
     }
 
-    void setHeaders(java.util.Map<java.lang.String,java.lang.String> headers)
+    void setHeaders(Map<String,String> headers)
     {
-        this.headersmap=headers;
+        this.headers=headers;
     }
 
     @Override
     public String toString() {
-        return "Request["+
-                "headers=" +headersmap.toString()+
-                ",body= "+ body.toString()+"] ;";
-
+        return "Request["+ "headers=" +headers.toString()+ ",body= "+ body.toString()+"] ;";
     }
-
 }

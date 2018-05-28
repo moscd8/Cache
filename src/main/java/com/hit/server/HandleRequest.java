@@ -2,15 +2,16 @@ package main.java.com.hit.server;
 
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import main.java.com.hit.dm.DataModel;
 import main.java.services.CacheUnitController;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.net.Socket;
-import java.util.Map;
 import java.util.Scanner;
 
 
@@ -41,60 +42,72 @@ public class HandleRequest<T> extends java.lang.Object implements java.lang.Runn
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("RUN");
-        gson = new GsonBuilder().create();
+       // System.out.println("RUN");
+       // gson = new GsonBuilder().create();
     }
 
     @Override
     public void run() {
         //  try {
-        String command;
+//        String command="test";
         DataModel[] datamodel = null;
         DataModel<T>[] body;
+        Request<DataModel<T>[]> request;
 
-        Type ref = new TypeToken<Request<DataModel<T>[]>>() {
-        }.getType();
-        Request<DataModel<T>[]> socketrequest;
-//            command= (String) inputStream.readObject();
-        command = (String) reader.nextLine();
+        String req = (String) reader.nextLine();
+        Type ref = new TypeToken<Request<DataModel<T>[]>>() {}.getType();
+        request=new Gson().fromJson(req,ref);
 
+        String command=request.getHeaders().get("action");
         System.out.println("Command is : " + command);
-        socketrequest = new Gson().fromJson(command, ref);
-        Map headers = socketrequest.getHeaders();
-        command = (String) headers.get("action");
-        body = socketrequest.getBody();
 
+         //(String) inputStream.readObject();
+        //Map headers = socketrequest.getHeaders();
 
-        if (command.toUpperCase().equals("GET")) {
+        body = request.getBody();           // get the dm
+        System.out.println("body is: "+ body.toString());
+        //System.out.println("after command ");
+        Boolean outputgson;
+        DataModel[] dataModels;
+        if (command.toUpperCase().equals("GET"))
+        {
             System.out.println("get...");
-            DataModel[] dataModels = controller.get(body);
-            for (DataModel<T> dm : dataModels) {
-                String outputgson = gson.toJson(dm);
-//                   outputStream.writeObject(outputgson);
-                System.out.println(outputgson);
-                writer.print(outputgson);
+            dataModels = controller.get(body);
+            //for (DataModel<T> dm : dataModels) {
+            // String outputgson =
+//            writer.println(controller.get(body));
+            if(dataModels!=null)
+            {
+            outputgson=true;}
+            else{
+                outputgson=false;
             }
+            writer.println(outputgson);
+
+//            String t=gson.toJson(dataModels);
+//            writer.println(t);
+                        //                   outputStream.writeObject(outputgson);
+              //  System.out.println(outputgson);
+               // writer.println(outputgson);
+            //}
         } else if (command.toUpperCase().equals("UPDATE")) {
             System.out.println("update..");
             boolean update = controller.update(body);
-//                outputStream.writeObject(update);
-                   writer.print(update);
+
+            //                outputStream.writeObject(update);
+            writer.println(update);
         } else if (command.equals("DELETE")) {
             System.out.println("delete..");
             boolean delete = controller.delete(body);
-            writer.print(delete);
+            writer.println(delete);
             //              outputStream.writeObject(delete);
         } else {
             System.out.println("no apporiate header found...");
-            writer.write("Unkowon Action");
+            writer.println("Unkowon Action");
             //            outputStream.writeObject("Unkowon Action");
         }
-      /*  } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-  }*/
+        writer.flush();
+        writer.write("Exit");
     }
 
     private void writeToOutputStrean(String s) {

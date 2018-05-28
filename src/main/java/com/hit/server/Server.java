@@ -20,21 +20,41 @@ public class Server extends Object implements Observer {
 
     public Server() throws IOException {
         unitController = new CacheUnitController();
-        executor = Executors.newFixedThreadPool(2);
+        executor = Executors.newFixedThreadPool(3);
         serversocket = new ServerSocket(12345);
     }
 
-    void start() throws IOException {
-        System.out.println("start");
+    void start()  {
+        try {
+            System.out.println("start");
         while (serverIsRunning) {
-            socket = serversocket.accept();
+                socket = serversocket.accept();
             System.out.println("Waiting for the client ");
 //            System.out.println("accept...");
-            Thread thread = new Thread(new HandleRequest(socket, unitController));
-//            executor.execute(thread);
+//            Thread thread = new Thread(new HandleRequest(socket, unitController));
+           HandleRequest<String> handelr = (new HandleRequest(socket, unitController));
+
+            executor.execute(new Thread(handelr));
             System.out.println("thread...");
         }
-        ((ExecutorService) executor).shutdown();
+        } catch (IOException e) {
+            if(!serverIsRunning)
+                System.out.println("Server is close");
+            else
+                System.out.println("serverError");
+//            e.printStackTrace();
+        }finally {
+            try {
+                if(serversocket != null && !serversocket.isClosed()) {
+                    serversocket.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+//        ((ExecutorService) executor).shutdown();
 
     }
 
@@ -44,19 +64,19 @@ public class Server extends Object implements Observer {
         String command = (String) arg;
         if (command.equals("start")) {
             System.out.println("Starting Server...");
-            try {
+           // try {
                 start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+          //  } catch (IOException e) {
+           //     e.printStackTrace();
+           // }
         } else if (command.equals("stop")) {
             System.out.println("Shutdown In Here");
             serverIsRunning = false;
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+  //          try {
+//                socket.close();
+    //        } catch (IOException e) {
+     //           e.printStackTrace();
+      //      }
             System.out.println("Shutdown Server...");
         }else
         {
