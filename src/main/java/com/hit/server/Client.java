@@ -11,47 +11,62 @@ import java.util.Map;
 import java.util.Scanner;
 
 
-public class Client
-{
+public class Client {
     String IPAddress;
-    public static void main(String[] args) throws IOException    {
-        Scanner scanner = new Scanner (System.in);
+
+    public static void main(String[] args) throws IOException {
+        Scanner scanner = new Scanner(System.in);
         DataModel[] dataModel = new DataModel[1];
 
-        dataModel[0] = new DataModel (Long.valueOf (100),Integer.valueOf(30));
+        dataModel[0] = new DataModel(Long.valueOf(100), Integer.valueOf(30));
 
-        Map<String, String> map = new HashMap<> ();
+        Map<String, String> map = new HashMap<>();
         String action = "action";
         String header = "UPDATE";
 
-        header=scanner.nextLine();
+        header = scanner.nextLine();
         scanner.reset();
 
-        map.put(action,header);
-        Request request = new Request (map,dataModel);
-        Gson gson = new Gson ();
+        map.put(action, header);
+        Request request = new Request(map, dataModel);
+        Gson gson = new Gson();
 
 
-        InetAddress address = InetAddress.getLocalHost ();
-        Socket clinetSocket = new Socket (address.getHostAddress (),12345);
+        InetAddress address = InetAddress.getLocalHost();
+        Socket clinetSocket = new Socket(address.getHostAddress(), 12345);
 
-        ObjectOutputStream writer=new ObjectOutputStream(clinetSocket.getOutputStream());
-        ObjectInputStream input=new ObjectInputStream (clinetSocket.getInputStream());
+//        ObjectOutputStream writer=new ObjectOutputStream(clinetSocket.getOutputStream());
+//        ObjectInputStream input=new ObjectInputStream (clinetSocket.getInputStream());
+//
+        Scanner reader = new Scanner(new InputStreamReader(clinetSocket.getInputStream()));
+        PrintWriter writer = new PrintWriter(new OutputStreamWriter(clinetSocket.getOutputStream()));
 
-        String gsonModel = gson.toJson (request);
-        writer.writeObject (gsonModel);
+        String gsonModel = gson.toJson(request);
+//        writer.writeObject (gsonModel);
+
+        System.out.println(gsonModel);
+
+        writer.write(gsonModel.toString());
         DataModel model;
         String inputGson;
-        while(true)
+        boolean flag=true;
+        while (flag)
         {
-        try {
-            inputGson = (String) input.readObject();
-            model = gson.fromJson(inputGson, DataModel.class);
-            System.out.println(model.toString());
-        }
-        catch (ClassNotFoundException e){
-            e.printStackTrace();
-        }
+//            inputGson = (String) input.readObject();
+            if (reader.hasNextLine()) {
+                inputGson = (String) reader.nextLine();
+                model = gson.fromJson(inputGson, DataModel.class);
+                System.out.println(model.toString());
+                System.out.println("enter another command ");
+                inputGson = (String) scanner.nextLine();
+  //*
+            } else {
+                System.out.println("enter another command ");
+                inputGson = (String) scanner.nextLine();
+                model = gson.fromJson(inputGson, DataModel.class);
+                System.out.println(model.toString());
+   //          */
+            }
         }
     }
 }

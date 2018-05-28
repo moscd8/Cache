@@ -83,7 +83,6 @@ public class DaoFileImpl<T>  implements IDao<Long,DataModel<T>> {
         try {
             pw = new PrintWriter(new BufferedWriter(new FileWriter(filename, true)));
             fr = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
-            //pw.println("id="+entity.getDataModelId()+" page="+entity+" \n ");
             String line = fr.readLine();
             while (line != null) {
                 if ((line.contains(entity.getDataModelId().toString()))) {

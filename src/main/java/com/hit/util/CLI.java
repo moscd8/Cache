@@ -26,7 +26,7 @@ public class CLI extends java.util.Observable implements java.lang.Runnable {
         while (connection) {
             System.out.println("Enter start or stop");
             command = scanner.nextLine().toLowerCase();
-
+            System.out.println("Commmand is "+ command);
             if (command.equals("start")) {
                 //hasChanged();
                 System.out.println("start...");
@@ -34,8 +34,8 @@ public class CLI extends java.util.Observable implements java.lang.Runnable {
             } else if (command.equals("stop")) {
                 System.out.println("stop1");
                 //hasChanged();
-                notifyObservers(command);
                 connection = false;
+                notifyObservers(command);
                 break;
             } else {
                 System.out.println("Not Vailed .. choose again..");
