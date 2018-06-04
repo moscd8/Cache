@@ -15,7 +15,7 @@ public class DaoFileImpl<T>  implements IDao<Long,DataModel<T>> {
     public void delete(DataModel<T> entity) {
         try {
             BufferedReader fr=new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
-            String temp_filename="afterdelete.obj";
+            String temp_filename="C:\\Users\\moshe\\IdeaProjects\\Cache\\src\\main\\resources\\GetDataModeles1.txt";
 //            temp_filename=filename.substring(filename.indexOf(".txt"+(-4)));
             PrintWriter pw= new PrintWriter(new BufferedWriter(new FileWriter(temp_filename)));
             String line=fr.readLine();

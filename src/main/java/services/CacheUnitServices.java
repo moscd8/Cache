@@ -11,8 +11,8 @@ public class CacheUnitServices<T> {
 
     public CacheUnitServices()
     {
-        LRUAlgoCacheImpl<T,DataModel<T>> lru=new LRUAlgoCacheImpl<>(3);
-        DaoFileImpl<T> daoFile = new DaoFileImpl<>("out.txt");
+        LRUAlgoCacheImpl<T,DataModel<T>> lru=new LRUAlgoCacheImpl<>(30);
+        DaoFileImpl<T> daoFile = new DaoFileImpl<>("src\\main\\resources\\GetDataModeles.txt");
 
         this.cacheUnit=new CacheUnit(lru,daoFile);
 
@@ -20,7 +20,6 @@ public class CacheUnitServices<T> {
             Integer integer=i;
             daoFile.save(new DataModel<>(Long.valueOf(i),integer));
         }
-
     }
 
     public boolean	delete(DataModel<T>[] dataModels)

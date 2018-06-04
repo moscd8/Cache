@@ -27,14 +27,15 @@ public class Server extends Object implements Observer {
     void start()  {
         try {
             System.out.println("start");
-        while (serverIsRunning) {
-                socket = serversocket.accept();
+        while (serverIsRunning)
+        {
+            socket = serversocket.accept();
             System.out.println("Waiting for the client ");
 //            System.out.println("accept...");
-//            Thread thread = new Thread(new HandleRequest(socket, unitController));
-           HandleRequest<String> handelr = (new HandleRequest(socket, unitController));
+            Thread thread = new Thread(new HandleRequest(socket, unitController));
+//            HandleRequest<String> handelr = (new HandleRequest(socket, unitController));
 
-            executor.execute(new Thread(handelr));
+            executor.execute(thread);
             System.out.println("thread...");
         }
         } catch (IOException e) {
@@ -42,7 +43,6 @@ public class Server extends Object implements Observer {
                 System.out.println("Server is close");
             else
                 System.out.println("serverError");
-//            e.printStackTrace();
         }finally {
             try {
                 if(serversocket != null && !serversocket.isClosed()) {
@@ -54,7 +54,7 @@ public class Server extends Object implements Observer {
 
         }
 
-//        ((ExecutorService) executor).shutdown();
+ //       ((ExecutorService) executor).shutdown();
 
     }
 
@@ -64,23 +64,16 @@ public class Server extends Object implements Observer {
         String command = (String) arg;
         if (command.equals("start")) {
             System.out.println("Starting Server...");
-           // try {
-                start();
-          //  } catch (IOException e) {
-           //     e.printStackTrace();
-           // }
-        } else if (command.equals("stop")) {
+            start();
+        } else if (command.equals("stop"))
+        {
             System.out.println("Shutdown In Here");
             serverIsRunning = false;
-  //          try {
-//                socket.close();
-    //        } catch (IOException e) {
-     //           e.printStackTrace();
-      //      }
             System.out.println("Shutdown Server...");
         }else
         {
             System.out.println("please enter valid command ");
+            command=" ";
         }
     }
 }
