@@ -59,8 +59,8 @@ public class DaoFileImpl<T>  implements IDao<Long,DataModel<T>> {
                    // System.out.println("yes");
                     //System.out.println(line.toString());
                     fr.close();
-                    String co=line.substring(line.indexOf("content")+8);
-//                    System.out.println("Co="+co);
+                        String co=line.substring(line.indexOf("content")+8);
+    //                    System.out.println("Co="+co);
                     return new DataModel<T>(aLong,co);
                 }
                line=fr.readLine();

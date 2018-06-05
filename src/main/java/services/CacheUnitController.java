@@ -21,4 +21,7 @@ public class CacheUnitController<T> {
     public     boolean	update(DataModel<T>[] dataModels){
          return cacheUnitServices.update(dataModels);
     }
+
+
+    public  String getstats(){return cacheUnitServices.statiticFun();}
 }
