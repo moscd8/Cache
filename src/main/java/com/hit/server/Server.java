@@ -27,15 +27,17 @@ public class Server extends Object implements Observer {
     void start()  {
         try {
             System.out.println("start");
+
         while (serverIsRunning)
         {
             socket = serversocket.accept();
             System.out.println("Waiting for the client ");
 //            System.out.println("accept...");
-            Thread thread = new Thread(new HandleRequest(socket, unitController));
 //            HandleRequest<String> handelr = (new HandleRequest(socket, unitController));
 
+            Thread thread = new Thread(new HandleRequest(socket, unitController));
             executor.execute(thread);
+
             System.out.println("thread...");
         }
         } catch (IOException e) {
@@ -54,7 +56,7 @@ public class Server extends Object implements Observer {
 
         }
 
- //       ((ExecutorService) executor).shutdown();
+        ((ExecutorService) executor).shutdown();
 
     }
 

@@ -105,7 +105,7 @@ public class CacheUnitServices<T> {
         int getswap=cacheUnit.getswap();
         int capacity=getCapacity();
         String algoCache=getLru();
-        String temp;
+        String temp="";
         temp="Capacity: "+ capacity + ".\n" +"Algorithm: " + algoCache + ".\n" + "Total number of request:" +".\n" +"Total number of DataModels:" + sizeofDM +".\n "+ "Total number of DataModels swaps: " + getswap+ ".\n" ;
 
         System.out.print("Check 1: "+temp);

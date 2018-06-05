@@ -24,6 +24,7 @@ public class HandleRequest<T> extends java.lang.Object implements java.lang.Runn
     private PrintWriter writer;
 
 
+
     //Scanner reader = new Scanner(new InputStreamReader(clinetSocket.getInputStream()));
     //PrintWriter writer = new PrintWriter(new OutputStreamWriter(clinetSocket.getOutputStream()));
 
@@ -33,18 +34,21 @@ public class HandleRequest<T> extends java.lang.Object implements java.lang.Runn
         this.controller = controller;
         this.socket = s;
 
+
+        // System.out.println("RUN");
+        // gson = new GsonBuilder().create();
+
+        /*
         try {
 
 //           inputStream=new ObjectInputStream(socket.getInputStream());
 //           outputStream=new ObjectOutputStream(socket.getOutputStream());
             reader = new Scanner(new InputStreamReader(socket.getInputStream()));
             writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // System.out.println("RUN");
-        // gson = new GsonBuilder().create();
+         */
     }
 
     @Override
@@ -60,27 +64,35 @@ public class HandleRequest<T> extends java.lang.Object implements java.lang.Runn
         String temp=null;
 
 
+        try {
+
+//           inputStream=new ObjectInputStream(socket.getInputStream());
+//           outputStream=new ObjectOutputStream(socket.getOutputStream());
+            reader = new Scanner(new InputStreamReader(socket.getInputStream()));
+            writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+
         //        System.out.println("1");
         String req = (String) reader.nextLine();
 
         if (req.equals(null))
             System.out.println("null");
         else if(req.equals("Show Statistics"))
-        {
-            temp = getStatistics() + " status: " + result + ".\n" + "#";
-            writer.print(temp);
+        {   temp="";
+            temp = getStatistics() + " status: " + result + " .....\n" + "#";
+            System.out.println("Temp is : *&&&&&&&&&&&"+ temp);
             writer.write(temp.toCharArray());
 
-        }else {
+            //  writer.print(temp);
+//            writer.write(temp.toCharArray());
 
+        }else {
                             System.out.println("Json Request:");
                             System.out.println("req is :" + req.toString());
 
-                            Type ref = new TypeToken<Request<DataModel<T>[]>>() {
-                            }.getType();
+                            Type ref = new TypeToken<Request<DataModel<T>[]>>() {}.getType();
                             request = new Gson().fromJson(req, ref);
 
-                            String command = request.getHeaders().get("action");
+                            String command = request.getHeaders().get("action").toUpperCase();
                             System.out.println("Command is : " + command);
 
                             //(String) inputStream.readObject();
@@ -92,43 +104,52 @@ public class HandleRequest<T> extends java.lang.Object implements java.lang.Runn
 
                             DataModel[] dataModels;
 
-
-                            if (command.toUpperCase().equals("GET")) {
-                                System.out.println("get...");
-                                dataModels = controller.get(body);
-                                if (dataModels != null) {
-                                    result = outputToClient[1];
-                                    //outputgson = true;
-                                } else {
-                //                outputgson = false;
-                                    result = outputToClient[0];
-
+                            if(command != null)
+                            {
+                                switch (command){
+                                    case "GET":{
+                                        System.out.println("get...");
+                                        dataModels = controller.get(body);
+                                        if (dataModels != null) {
+                                            result = outputToClient[1];
+                                        } else {
+                                            result = outputToClient[0];
+                                        }
+                                        System.out.println("result is :"+ result);
+                                        break;
+                                    }
+                                    case "UPDATE":{
+                                        System.out.println("update..");
+                                        boolean update = controller.update(body);
+                                        writer.println(update);
+                                        break;
+                                    }
+                                    case "DELETE":{
+                                        System.out.println("delete..");
+                                        boolean delete = controller.delete(body);
+                                        writer.println(delete);
+                                        break;
+                                    }
                                 }
-
-                                writer.println(result.toString());
-//                                break;
-                                //System.out.println(result);
-                            } else if (command.toUpperCase().equals("UPDATE")) {
-                                System.out.println("update..");
-                                boolean update = controller.update(body);
-
-                                //                outputStream.writeObject(update);
-                                writer.println(update);
-                            } else if (command.equals("DELETE")) {
-                                System.out.println("delete..");
-                                boolean delete = controller.delete(body);
-                                writer.println(delete);
-                                //              outputStream.writeObject(delete);
-                            } else {
-                                System.out.println("no apporiate header found...");
-                                writer.println("Unkowon Action");
-                                //            outputStream.writeObject("Unkowon Action");
                             }
-
         }
-        writer.flush();
-        writer.write("Exit");
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        writer.flush();
+
+
+//        reader.close();
+//        writer.close();
+//        temp = getStatistics() + " status: " + result + ".\n" + "#";
+//        writer.write(temp.toCharArray());
+
+        System.out.println("exit");
+        writer.println("Exit");
+        writer.flush();
+        writer.close();
+        reader.close();
     }
 
     private void writeToOutputStream(String s) {
