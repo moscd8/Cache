@@ -13,8 +13,8 @@ import java.util.concurrent.Executors;
 public class Server extends Object implements Observer {
 
     private ServerSocket serversocket;
-    private Socket socket=null;
-    private boolean serverIsRunning=true;
+    private Socket socket = null;
+    private boolean serverIsRunning = true;
     private CacheUnitController unitController;
     private ExecutorService executor;
 
@@ -24,30 +24,27 @@ public class Server extends Object implements Observer {
         serversocket = new ServerSocket(12345);
     }
 
-    void start()  {
+    void start() {
         try {
             System.out.println("start");
 
-        while (serverIsRunning)
-        {
-            socket = serversocket.accept();
-            System.out.println("Waiting for the client ");
-//            System.out.println("accept...");
-//            HandleRequest<String> handelr = (new HandleRequest(socket, unitController));
+            while (serverIsRunning) {
+                socket = serversocket.accept();
+                System.out.println("Waiting for the client ");
 
-            Thread thread = new Thread(new HandleRequest(socket, unitController));
-            executor.execute(thread);
+                Thread thread = new Thread(new HandleRequest(socket, unitController));
+                executor.execute(thread);
 
-            System.out.println("thread...");
-        }
+                System.out.println("thread...");
+            }
         } catch (IOException e) {
-            if(!serverIsRunning)
+            if (!serverIsRunning)
                 System.out.println("Server is close");
             else
                 System.out.println("serverError");
-        }finally {
+        } finally {
             try {
-                if(serversocket != null && !serversocket.isClosed()) {
+                if (serversocket != null && !serversocket.isClosed()) {
                     serversocket.close();
                 }
             } catch (IOException e) {
@@ -55,7 +52,6 @@ public class Server extends Object implements Observer {
             }
 
         }
-
         ((ExecutorService) executor).shutdown();
 
     }
@@ -67,15 +63,13 @@ public class Server extends Object implements Observer {
         if (command.equals("start")) {
             System.out.println("Starting Server...");
             start();
-        } else if (command.equals("stop"))
-        {
+        } else if (command.equals("stop")) {
             System.out.println("Shutdown In Here");
             serverIsRunning = false;
             System.out.println("Shutdown Server...");
-        }else
-        {
+        } else {
             System.out.println("please enter valid command ");
-            command=" ";
+            command = " ";
         }
     }
 }

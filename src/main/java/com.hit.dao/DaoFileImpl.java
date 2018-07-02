@@ -4,39 +4,37 @@ import main.java.com.hit.dm.DataModel;
 
 import java.io.*;
 
-public class DaoFileImpl<T>  implements IDao<Long,DataModel<T>> {
+public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
     private String filename;
 
-    public  DaoFileImpl(String filename){
-        this.filename=filename;
-}
+    public DaoFileImpl(String filename) {
+        this.filename = filename;
+    }
 
     @Override
     public void delete(DataModel<T> entity) {
         try {
-            BufferedReader fr=new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
-            String temp_filename="C:\\Users\\moshe\\IdeaProjects\\Cache\\src\\main\\resources\\GetDataModeles1.txt";
-//            temp_filename=filename.substring(filename.indexOf(".txt"+(-4)));
-            PrintWriter pw= new PrintWriter(new BufferedWriter(new FileWriter(temp_filename)));
-            String line=fr.readLine();
+            BufferedReader fr = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
+            String temp_filename = "resources\\GetDataModeles.txt";
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(temp_filename)));
+            String line = fr.readLine();
 
-            while (line != null ){
-                if(line.toString().contains(entity.getDataModelId().toString()))
-                    line=fr.readLine();
-                else
-                {
+            while (line != null) {
+                if (line.toString().contains(entity.getDataModelId().toString()))
+                    line = fr.readLine();
+                else {
                     pw.println(line.toString());
-                    line=fr.readLine();
+                    line = fr.readLine();
                 }
             }
             fr.close();
             pw.close();
-            File file=new File(filename);
+            File file = new File(filename);
             file.delete();
 
-            file=new File(temp_filename);
+            file = new File(temp_filename);
             file.renameTo(new File(filename));
-        }   catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,23 +49,19 @@ public class DaoFileImpl<T>  implements IDao<Long,DataModel<T>> {
             BufferedReader fr = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
             DataModel<T> page = null;
             String line = fr.readLine();
-           while ( line != null){
-           {
-              System.out.println(line.toString());
-              if(line.toString().contains(aLong.toString()))
+            while (line != null) {
                 {
-                   // System.out.println("yes");
-                    //System.out.println(line.toString());
-                    fr.close();
-                        String co=line.substring(line.indexOf("content")+8);
-    //                    System.out.println("Co="+co);
-                    return new DataModel<T>(aLong,co);
+                    System.out.println(line.toString());
+                    if (line.toString().contains(aLong.toString())) {
+                        fr.close();
+                        String co = line.substring(line.indexOf("content") + 8);
+                        return new DataModel<T>(aLong, co);
+                    }
+                    line = fr.readLine();
                 }
-               line=fr.readLine();
             }
-           }
 
-  } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -86,7 +80,6 @@ public class DaoFileImpl<T>  implements IDao<Long,DataModel<T>> {
             String line = fr.readLine();
             while (line != null) {
                 if ((line.contains(entity.getDataModelId().toString()))) {
-                //    System.out.println("is already exist..");
                     break;
                 } else
                     line = fr.readLine();

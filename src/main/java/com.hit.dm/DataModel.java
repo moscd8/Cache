@@ -13,7 +13,6 @@ public class DataModel<T> extends Object implements java.io.Serializable {
         return this.id;
     }
 
-
     public T getContent() {
         return this.content;
     }
@@ -28,18 +27,8 @@ public class DataModel<T> extends Object implements java.io.Serializable {
 
     @Override
     public String toString() {
-  //      return Arrays.toString((byte[])content)+ " " + id.toString();
-        return "id=" + id + " " + "content=" + content;//super.toString();
+        return "id=" + id + " " + "content=" + content;
     }
 
-/*
-   public int hashCode(){return  (int)id; }//null;}
-
-    void setDataModelid(java.lang.Long id ){
-        this.id=id;
-    }
-
-//    java.lang.String toString(){ }
-*/
 }
 
